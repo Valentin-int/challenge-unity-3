@@ -8,6 +8,9 @@ public class PlayerControllerX : MonoBehaviour
 
     public float floatForce;
     private float gravityModifier = 1.5f;
+    public float topGame = 16.0f;
+    public float botGame = 2.0f;
+    private bool bouceGround = false;
     private Rigidbody playerRb;
 
     public ParticleSystem explosionParticle;
@@ -16,6 +19,7 @@ public class PlayerControllerX : MonoBehaviour
     private AudioSource playerAudio;
     public AudioClip moneySound;
     public AudioClip explodeSound;
+    public AudioClip bouceSound;
 
 
     // Start is called before the first frame update
@@ -33,6 +37,23 @@ public class PlayerControllerX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.y < botGame && !gameOver)
+        {
+            playerRb.AddForce(Vector3.up * floatForce / 2, ForceMode.Impulse);
+            if (bouceGround == false)
+            {
+                playerAudio.PlayOneShot(bouceSound, 1.0f);
+                bouceGround = true;
+            }
+        }
+        if (transform.position.y > botGame)
+        {
+            bouceGround = false;
+        }
+        if (transform.position.y > topGame)
+        {
+            playerRb.AddForce(Vector3.down * floatForce / 2, ForceMode.Impulse);
+        }
         // While space is pressed and player is low enough, float up
         if (Input.GetKey(KeyCode.Space) && !gameOver)
         {
